@@ -2,10 +2,22 @@
 
 ## Execute pdfmake from golang
 
-Get pdfmake.js from: https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.12/pdfmake.js
+### Build and Run
 
-Run you will get
+Build program:
 ```
+# Before test this program, get pdfmake.js, using:
+wget https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.12/pdfmake.js
+go mod tidy
+go build
+./pdfmakego
+
+```
+
+### Error: TypeError: Cannot read properties of undefined (reading 'navigator')
+```
+./pdfmakego
+
 TypeError: Cannot read properties of undefined (reading 'navigator')
 pdfmakecode.js:61176:1184
 TypeError: Cannot read properties of undefined (reading 'navigator')
@@ -20,6 +32,7 @@ TypeError: Cannot read properties of undefined (reading 'navigator')
     at pdfmakecode.js:74173:37
     at pdfmakecode.js:74176:12
 2025/09/12 16:26:28 Failed to run JS module: TypeError: Cannot read properties of undefined (reading 'navigator')
+
 ```
 
 Comment some request in pdfmake.js
@@ -29,4 +42,16 @@ Comment some request in pdfmake.js
 ```
 54432 // var FileSaver = __webpack_require__(42616);
 54433 // var saveAs = FileSaver.saveAs;
+```
+
+### Final Run
+```
+ignacio@igt25:~/projects/pdfmakego$ ./pdfmakego
+
+Tests using v8 Version: 10.9.194.9-v8go
+RunScript(pdfmake): undefined
+RunScript(myCode): This is a variable named: myBase64 created in myScript.js
+globalThis.myBase64 : This is a variable named: myBase64 created in myScript.js
+This is the end !
+
 ```
