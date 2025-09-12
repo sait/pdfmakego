@@ -37,8 +37,9 @@ TypeError: Cannot read properties of undefined (reading 'navigator')
 
 Comment some request in pdfmake.js
 - Open pdfmake.js
-- find: ```FileSaver```
-- Comment this lines
+- Search for: ```FileSaver```
+- Comment this 2 lines
+- Save
 ```
 54432 // var FileSaver = __webpack_require__(42616);
 54433 // var saveAs = FileSaver.saveAs;
