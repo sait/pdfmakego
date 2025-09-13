@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 
+	"go.kuoruan.net/v8go-polyfills/console"
+	"go.kuoruan.net/v8go-polyfills/timers"
 	"rogchap.com/v8go"
 )
 
@@ -44,39 +46,11 @@ func runScript(ctx *v8go.Context, filename string) {
 	fmt.Printf("RunScript(%s): %+v\n", filename, res)
 }
 
-// Test1 Run pdfmake0212.js and myScript.js
-func test1() {
-
-	pdfmakeCode := readFile("pdfmake.js")
-	myCode := readFile("myScript.js")
-
-	iso := v8go.NewIsolate()
-	defer iso.Dispose()
-	ctx := v8go.NewContext(iso)
-	defer ctx.Close()
-
-	// Run PdfMake code to create pdfmake functions
-	res, err := ctx.RunScript(pdfmakeCode, "pdfmakecode.js")
-	if err != nil {
-		e := err.(*v8go.JSError)  // JavaScript errors will be returned as the JSError struct
-		fmt.Println(e.Message)    // the message of the exception thrown
-		fmt.Println(e.Location)   // the filename, line number and the column where the error occured
-		fmt.Println(e.StackTrace) // the full stack trace of the error, if available
-		log.Fatalf("Failed to run JS module: %v\n", err)
-	}
-	fmt.Printf("RunScript(pdfmake): %+v\n", res)
-
-	// Run my Code
-	res, err = ctx.RunScript(myCode, "mycode.js")
-	if err != nil {
-		e := err.(*v8go.JSError)  // JavaScript errors will be returned as the JSError struct
-		fmt.Println(e.Message)    // the message of the exception thrown
-		fmt.Println(e.Location)   // the filename, line number and the column where the error occured
-		fmt.Println(e.StackTrace) // the full stack trace of the error, if available
-		log.Fatalf("Failed to run JS module: %v\n", err)
-
-	}
-	fmt.Printf("RunScript(myCode): %+v\n", res)
+// Test1 Run pdfmake.js and myScript.js
+// wget https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.12/pdfmake.js
+func test1(ctx *v8go.Context) {
+	runScript(ctx, "pdfmake.js")
+	runScript(ctx, "myScript.js")
 
 	// Show Context Variable: myBase64
 	myb64, err := ctx.Global().Get("myBase64")
@@ -84,15 +58,12 @@ func test1() {
 		panic(err)
 	}
 	fmt.Printf("globalThis.myBase64 : %s\n", myb64.String())
+
 }
 
 // Test2 Run pdfkit
 // wget https://cdn.jsdelivr.net/npm/pdfkit@latest/js/pdfkit.standalone.js
-func test2() {
-	iso := v8go.NewIsolate()
-	defer iso.Dispose()
-	ctx := v8go.NewContext(iso)
-	defer ctx.Close()
+func test2(ctx *v8go.Context) {
 	runScript(ctx, "TextEncoder.polyfill.js")
 	runScript(ctx, "pdfkit.standalone.js")
 	runScript(ctx, "myPdfKitScript.js")
@@ -100,7 +71,19 @@ func test2() {
 
 func main() {
 	fmt.Printf("Tests using v8 Version: %s\n", v8go.Version())
-	// test1()
-	test2()
-	fmt.Printf("This is the end !\n")
+
+	// Prepare v8 context, inject timers and console for setTimeout() and console.Log()
+	iso := v8go.NewIsolate()
+	global := v8go.NewObjectTemplate(iso)
+	if err := timers.InjectTo(iso, global); err != nil {
+		panic(err)
+	}
+	defer iso.Dispose()
+	ctx := v8go.NewContext(iso, global)
+	defer ctx.Close()
+	console.InjectTo(ctx)
+
+	//test1(ctx)
+	test2(ctx)
+	fmt.Printf("ending main.go  !\n")
 }

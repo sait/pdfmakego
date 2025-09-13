@@ -1,3 +1,5 @@
+console.log("\nstarting myScript.js...");
+
 var docDefinition = {
     content: [
         'This is a Very Nice PDF !!!.',
@@ -20,7 +22,8 @@ pdfDocGenerator.getBase64(function(base64) {
 // V8.RunScript will return the last expression as result
 myBase64;
 
-pdfDocGenerator.version;
+console.log("ending myScript.js...");
+"Finish myScript.js";
 // JSON.stringify(pdfDocGenerator);
 
 // pdfDocGenerator.getBase64();

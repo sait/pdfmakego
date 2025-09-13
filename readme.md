@@ -89,3 +89,25 @@ ReferenceError: setTimeout is not defined
 #### setTimeout is not defined
 
 We need to add setTimeout to our context, please check https://github.com/sait/polyfills-kuoruan
+
+Errors:
+```
+ReferenceError: setTimeout is not defined
+    at runTimeout (pdfkit.standalone.js:43457:30)
+    at process.nextTick (pdfkit.standalone.js:43561:9)
+    at maybeReadMore (pdfkit.standalone.js:45703:13)
+    at addChunk (pdfkit.standalone.js:45469:3)
+    at readableAddChunk (pdfkit.standalone.js:45445:11)
+    at Readable.push (pdfkit.standalone.js:45411:10)
+    at PDFDocument._write (pdfkit.standalone.js:5899:10)
+    at new PDFDocument (pdfkit.standalone.js:5805:10)
+    at myPdfKitScript.js:4:13
+2025/09/13 05:52:04 Failed to run JS module: ReferenceError: setTimeout is not defined
+
+
+ReferenceError: fs is not defined
+myPdfKitScript.js:5:10
+ReferenceError: fs is not defined
+    at myPdfKitScript.js:5:10
+2025/09/13 05:54:14 Failed to run JS module: ReferenceError: fs is not defined
+```
