@@ -111,3 +111,27 @@ ReferenceError: fs is not defined
     at myPdfKitScript.js:5:10
 2025/09/13 05:54:14 Failed to run JS module: ReferenceError: fs is not defined
 ```
+
+
+Estrategias
+---
+
+```
+- Tratar de ejecutar mini programa de pdfkit
+- PdfKit, se puede usar en el browser, ver https://github.com/foliojs/pdfkit/blob/master/examples/browserify/browser.js
+- Se requiere importar la libreria blob-stream y mandarla como parametro a doc.pipe()
+- https://www.npmjs.com/package/blob-stream
+- https://github.com/devongovett/blob-stream
+
+
+var blobStream = require('blob-stream');
+var doc = new PDFDocument();
+var stream = doc.pipe(blobStream());
+doc.fontSize(25).text('Here is some vector graphics...', 100, 80);
+doc.end();
+stream.on('finish', function() {
+    iframe.src = stream.toBlobURL('application/pdf');
+  });
+
+
+```
