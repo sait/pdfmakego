@@ -30,6 +30,20 @@ func readFile(filename string) string {
 	return string(bytes)
 }
 
+// run a JS Script in a v8 context
+func runScript(ctx *v8go.Context, filename string) {
+	srcCode := readFile(filename)
+	res, err := ctx.RunScript(srcCode, filename)
+	if err != nil {
+		e := err.(*v8go.JSError)  // JavaScript errors will be returned as the JSError struct
+		fmt.Println(e.Message)    // the message of the exception thrown
+		fmt.Println(e.Location)   // the filename, line number and the column where the error occured
+		fmt.Println(e.StackTrace) // the full stack trace of the error, if available
+		log.Fatalf("Failed to run JS module: %v\n", err)
+	}
+	fmt.Printf("RunScript(%s): %+v\n", filename, res)
+}
+
 // Test1 Run pdfmake0212.js and myScript.js
 func test1() {
 
@@ -72,8 +86,21 @@ func test1() {
 	fmt.Printf("globalThis.myBase64 : %s\n", myb64.String())
 }
 
+// Test2 Run pdfkit
+// wget https://cdn.jsdelivr.net/npm/pdfkit@latest/js/pdfkit.standalone.js
+func test2() {
+	iso := v8go.NewIsolate()
+	defer iso.Dispose()
+	ctx := v8go.NewContext(iso)
+	defer ctx.Close()
+	runScript(ctx, "TextEncoder.polyfill.js")
+	runScript(ctx, "pdfkit.standalone.js")
+	runScript(ctx, "myPdfKitScript.js")
+}
+
 func main() {
 	fmt.Printf("Tests using v8 Version: %s\n", v8go.Version())
-	test1()
+	// test1()
+	test2()
 	fmt.Printf("This is the end !\n")
 }

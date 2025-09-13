@@ -20,6 +20,7 @@ pdfDocGenerator.getBase64(function(base64) {
 // V8.RunScript will return the last expression as result
 myBase64;
 
+pdfDocGenerator.version;
 // JSON.stringify(pdfDocGenerator);
 
 // pdfDocGenerator.getBase64();
