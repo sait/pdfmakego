@@ -47,91 +47,15 @@ Comment some request in pdfmake.js
 
 ### Final Run
 ```
-ignacio@igt25:~/projects/pdfmakego$ ./pdfmakego
-
+ignacio@igt25:~/projects/go/pdfmakego$ ./pdfmakego 
 Tests using v8 Version: 10.9.194.9-v8go
-RunScript(pdfmake): undefined
-RunScript(myCode): This is a variable named: myBase64 created in myScript.js
-globalThis.myBase64 : This is a variable named: myBase64 created in myScript.js
-This is the end !
+RunScript(pdfmake.js): undefined
 
+starting myScript.js...
+ending myScript.js...
+RunScript(myScript.js): Finish myScript.js
+PDF in Base64 is ready
+File 'myDocument.pdf' saved successfully from base64 string.
+ending main.go  !
 ```
 
-### Testing PdfKit
-
-In test2() we are trying to run a script using PdfKit because [PdfMake](http://pdfmake.org/#/) is based on [PdfKit](https://pdfkit.org/)
-
-Download pdfkit.standalone.js
-```
-
-wget https://cdn.jsdelivr.net/npm/pdfkit@latest/js/pdfkit.standalone.js
-
-./pdfmakego
-
-Tests using v8 Version: 10.9.194.9-v8go
-RunScript(TextEncoder.js): function(octets){var string="",i=0;while(i<octets.length){var octet=octets[i],bytesNeeded=0,codePoint=0;octet<=...<omitted>...g}
-RunScript(pdfkit.standalone.js): undefined
-ReferenceError: setTimeout is not defined
-pdfkit.standalone.js:43457:30
-ReferenceError: setTimeout is not defined
-    at runTimeout (pdfkit.standalone.js:43457:30)
-    at process.nextTick (pdfkit.standalone.js:43561:9)
-    at maybeReadMore (pdfkit.standalone.js:45703:13)
-    at addChunk (pdfkit.standalone.js:45469:3)
-    at readableAddChunk (pdfkit.standalone.js:45445:11)
-    at Readable.push (pdfkit.standalone.js:45411:10)
-    at PDFDocument._write (pdfkit.standalone.js:5899:10)
-    at new PDFDocument (pdfkit.standalone.js:5805:10)
-    at myPdfKitScript.js:1:13
-2025/09/12 17:21:48 Failed to run JS module: ReferenceError: setTimeout is not defined
-```
-
-#### setTimeout is not defined
-
-We need to add setTimeout to our context, please check https://github.com/sait/polyfills-kuoruan
-
-Errors:
-```
-ReferenceError: setTimeout is not defined
-    at runTimeout (pdfkit.standalone.js:43457:30)
-    at process.nextTick (pdfkit.standalone.js:43561:9)
-    at maybeReadMore (pdfkit.standalone.js:45703:13)
-    at addChunk (pdfkit.standalone.js:45469:3)
-    at readableAddChunk (pdfkit.standalone.js:45445:11)
-    at Readable.push (pdfkit.standalone.js:45411:10)
-    at PDFDocument._write (pdfkit.standalone.js:5899:10)
-    at new PDFDocument (pdfkit.standalone.js:5805:10)
-    at myPdfKitScript.js:4:13
-2025/09/13 05:52:04 Failed to run JS module: ReferenceError: setTimeout is not defined
-
-
-ReferenceError: fs is not defined
-myPdfKitScript.js:5:10
-ReferenceError: fs is not defined
-    at myPdfKitScript.js:5:10
-2025/09/13 05:54:14 Failed to run JS module: ReferenceError: fs is not defined
-```
-
-
-Estrategias
----
-
-```
-- Tratar de ejecutar mini programa de pdfkit
-- PdfKit, se puede usar en el browser, ver https://github.com/foliojs/pdfkit/blob/master/examples/browserify/browser.js
-- Se requiere importar la libreria blob-stream y mandarla como parametro a doc.pipe()
-- https://www.npmjs.com/package/blob-stream
-- https://github.com/devongovett/blob-stream
-
-
-var blobStream = require('blob-stream');
-var doc = new PDFDocument();
-var stream = doc.pipe(blobStream());
-doc.fontSize(25).text('Here is some vector graphics...', 100, 80);
-doc.end();
-stream.on('finish', function() {
-    iframe.src = stream.toBlobURL('application/pdf');
-  });
-
-
-```

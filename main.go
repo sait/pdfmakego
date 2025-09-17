@@ -54,14 +54,11 @@ func saveB64(base64string string, filename string) {
 	if err != nil {
 		log.Fatalf("Error decoding base64 string: %v", err)
 	}
-
 	// Write the decoded bytes to a file
-
 	err = os.WriteFile(filename, decodedBytes, 0644) // 0644 grants read/write for owner, read-only for others
 	if err != nil {
 		log.Fatalf("Error writing file: %v", err)
 	}
-
 	fmt.Printf("File '%s' saved successfully from base64 string.\n", filename)
 }
 
@@ -81,7 +78,12 @@ func main() {
 	console.InjectTo(ctx)
 
 	// Run Script
+	// Please be sure to:
+	// 1) Have pdfmake.js download it
 	// wget https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.12/pdfmake.js
+	// 2) Comment the 2 FileSaver references
+	// 54432: // var FileSaver = __webpack_require__(42616);
+	// 54433: // var saveAs = FileSaver.saveAs;
 	runScript(ctx, "pdfmake.js")
 	runScript(ctx, "myScript.js")
 
@@ -96,5 +98,4 @@ func main() {
 	saveB64(myb64.String(), "myDocument.pdf")
 
 	fmt.Printf("ending main.go  !\n")
-
 }
