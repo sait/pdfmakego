@@ -48,14 +48,6 @@ func runScript(ctx *v8go.Context, filename string) {
 	fmt.Printf("RunScript(%s): %+v\n", filename, res)
 }
 
-// Test1 Run pdfmake.js and myScript.js
-// wget https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.12/pdfmake.js
-func test1(ctx *v8go.Context) {
-	runScript(ctx, "pdfmake.js")
-	runScript(ctx, "myScript.js")
-
-}
-
 func saveB64(base64string string, filename string) {
 	// Decode the base64 string
 	decodedBytes, err := base64.StdEncoding.DecodeString(base64string)
@@ -76,7 +68,8 @@ func saveB64(base64string string, filename string) {
 func main() {
 	fmt.Printf("Tests using v8 Version: %s\n", v8go.Version())
 
-	// Prepare v8 context, inject timers and console for setTimeout() and console.Log()
+	// Prepare v8 context, inject timers and console
+	// to have setTimeout() and console.Log() in global context
 	iso := v8go.NewIsolate()
 	global := v8go.NewObjectTemplate(iso)
 	if err := timers.InjectTo(iso, global); err != nil {
@@ -88,18 +81,19 @@ func main() {
 	console.InjectTo(ctx)
 
 	// Run Script
-	test1(ctx)
+	// wget https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.12/pdfmake.js
+	runScript(ctx, "pdfmake.js")
+	runScript(ctx, "myScript.js")
 
-	// Wait 1 seconds
+	// Wait the script to finish
 	time.Sleep(1 * time.Second)
 
-	// Show Context Variable: myBase64
+	//  Get result variable:myBase64 and save the file
 	myb64, err := ctx.Global().Get("myBase64")
 	if err != nil {
 		panic(err)
 	}
-	//fmt.Printf("globalThis.myBase64 : %s\n", myb64.String())
-	saveB64(myb64.String(), "documento.pdf")
+	saveB64(myb64.String(), "myDocument.pdf")
 
 	fmt.Printf("ending main.go  !\n")
 

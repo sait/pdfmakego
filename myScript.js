@@ -20,6 +20,7 @@ var docDefinition = {
 
 const pdfDocGenerator = pdfMake.createPdf(docDefinition);
 
+
 //console.log(JSON.stringify(pdfDocGenerator))
 
 globalThis.myBase64 = "This is a variable named: myBase64 created in myScript.js";
