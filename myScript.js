@@ -19,10 +19,9 @@ var docDefinition = {
     };
 
 const pdfDocGenerator = pdfMake.createPdf(docDefinition);
-
-
 //console.log(JSON.stringify(pdfDocGenerator))
 
+// Create global variable: myBase64 
 globalThis.myBase64 = "This is a variable named: myBase64 created in myScript.js";
 
 pdfDocGenerator.getBase64(function(base64) {
@@ -34,7 +33,4 @@ pdfDocGenerator.getBase64(function(base64) {
 
 console.log("ending myScript.js...");
 "Finish myScript.js";
-// JSON.stringify(pdfDocGenerator);
 
-// pdfDocGenerator.getBase64();
-// Failed to run JS module: getBase64 is an async method and needs a callback argument
