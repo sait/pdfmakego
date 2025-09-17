@@ -4,11 +4,11 @@
 
 This is an easy way to create PDF Documents in a Golang enviroment, using the [pdfmake javascript library](http://pdfmake.org/index.html#/)
 
-It works running the javascript code in a V8 Engine, returning the PDF to Golang
+It works running javascript code in a V8 Engine, and then returning the PDF to Golang
 
-[PDFMake Playground](http://pdfmake.org/index.html#/)
+[PDFMake Playground](http://pdfmake.org/playground.html)
 
-Golang, Javascript and C++ dancing together
+**Golang, Javascript and C++ dancing together**
 
 
 Enjoy it !
