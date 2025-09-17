@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"go.kuoruan.net/v8go-polyfills/console"
 	"go.kuoruan.net/v8go-polyfills/timers"
@@ -52,21 +54,23 @@ func test1(ctx *v8go.Context) {
 	runScript(ctx, "pdfmake.js")
 	runScript(ctx, "myScript.js")
 
-	// Show Context Variable: myBase64
-	myb64, err := ctx.Global().Get("myBase64")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("globalThis.myBase64 : %s\n", myb64.String())
-
 }
 
-// Test2 Run pdfkit
-// wget https://cdn.jsdelivr.net/npm/pdfkit@latest/js/pdfkit.standalone.js
-func test2(ctx *v8go.Context) {
-	runScript(ctx, "TextEncoder.polyfill.js")
-	runScript(ctx, "pdfkit.standalone.js")
-	runScript(ctx, "myPdfKitScript.js")
+func saveB64(base64string string, filename string) {
+	// Decode the base64 string
+	decodedBytes, err := base64.StdEncoding.DecodeString(base64string)
+	if err != nil {
+		log.Fatalf("Error decoding base64 string: %v", err)
+	}
+
+	// Write the decoded bytes to a file
+
+	err = os.WriteFile(filename, decodedBytes, 0644) // 0644 grants read/write for owner, read-only for others
+	if err != nil {
+		log.Fatalf("Error writing file: %v", err)
+	}
+
+	fmt.Printf("File '%s' saved successfully from base64 string.\n", filename)
 }
 
 func main() {
@@ -83,7 +87,20 @@ func main() {
 	defer ctx.Close()
 	console.InjectTo(ctx)
 
-	//test1(ctx)
-	test2(ctx)
+	// Run Script
+	test1(ctx)
+
+	// Wait 1 seconds
+	time.Sleep(1 * time.Second)
+
+	// Show Context Variable: myBase64
+	myb64, err := ctx.Global().Get("myBase64")
+	if err != nil {
+		panic(err)
+	}
+	//fmt.Printf("globalThis.myBase64 : %s\n", myb64.String())
+	saveB64(myb64.String(), "documento.pdf")
+
 	fmt.Printf("ending main.go  !\n")
+
 }
