@@ -1,6 +1,19 @@
 # pdfmakego
 
-## Execute pdfmake from golang
+## Create PDF Documents in Golang, using PdfMake-JS in a Embbed V8 Engine
+
+This is an easy way to create PDF Documents in a Golang enviroment, using the [pdfmake javascript library](http://pdfmake.org/index.html#/)
+
+It works running the javascript code in a V8 Engine, returning the PDF to Golang
+
+[PDFMake Playground](http://pdfmake.org/index.html#/)
+
+Golang, Javascript and C++ dancing together
+
+
+Enjoy it !
+
+
 
 ### Build and Run
 
